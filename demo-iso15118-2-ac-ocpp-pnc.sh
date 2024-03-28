@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-DEMO_REPO="https://github.com/sahabul/everest-demo.git"
+DEMO_REPO="https://github.com/sahabulh/everest-demo.git"
 DEMO_BRANCH="ocpp-pnc-demo-mre"
 
 MAEVE_REPO="https://github.com/thoughtworks/maeve-csms.git"
@@ -97,8 +97,8 @@ if [[ "$DEMO_VERSION" =~ sp2 || "$DEMO_VERSION" =~ sp3 ]]; then
   docker exec everest-ac-demo-manager-1 /bin/bash -c "openssl verify -show_chain -CAfile dist/etc/everest/certs/ca/v2g/V2G_ROOT_CA.pem --untrusted dist/etc/everest/certs/ca/csms/CPO_SUB_CA1.pem --untrusted dist/etc/everest/certs/ca/csms/CPO_SUB_CA2.pem dist/etc/everest/certs/client/csms/CSMS_LEAF.pem"
 fi
 
-docker cp /home/sahabul/Sandia/Everest/everest-demo/manager/device_model_storage_maeve_sp1.db everest-ac-demo-manager-1:/workspace/dist/share/everest/modules/OCPP201/device_model_storage.db
-docker cp /home/sahabul/Sandia/Everest/everest-workspace-latest/everest-core/config/config-sil-ocpp201-pnc.yaml  everest-ac-demo-manager-1:/ext/source/config/config-sil-ocpp201-pnc.yaml
+docker cp manager/device_model_storage.db everest-ac-demo-manager-1:/workspace/dist/share/everest/modules/OCPP201/device_model_storage.db
+docker cp config-sil-ocpp201-pnc.yaml  everest-ac-demo-manager-1:/ext/source/config/config-sil-ocpp201-pnc.yaml
 
 if [[ "$DEMO_VERSION" =~ v2.0.1 ]]; then
   script=run-sil-ocpp201-pnc.sh
