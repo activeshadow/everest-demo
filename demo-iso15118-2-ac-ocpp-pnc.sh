@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
 
-DEMO_REPO="https://github.com/sahabulh/everest-demo.git"
+DEMO_REPO="https://github.com/activeshadow/everest-demo.git"
 DEMO_BRANCH="ocpp-pnc-demo-mre"
+
+OCPP_REPO="https://github.com/activeshadow/ocpp-csms.git"
+OCPP_BRANCH="dockerize"
 
 MAEVE_REPO="https://github.com/thoughtworks/maeve-csms.git"
 MAEVE_BRANCH="b990d0eddf2bf80be8d9524a7b08029fbb305c7d" # patch files are based on this commit
@@ -65,6 +68,18 @@ echo "Cloning EVerest from ${DEMO_REPO} into ${DEMO_DIR}/everest-demo"
 git clone --branch "${DEMO_BRANCH}" "${DEMO_REPO}" everest-demo
 
 
+echo "Cloning simple OCPP-CSMS from ${OCPP_REPO} into ${DEMO_DIR}/ocpp-csms"
+git clone --recursive --branch "${OCPP_BRANCH}" "${OCPP_REPO}" ocpp-csms
+
+
+echo "Starting simple OCPP-CSMS as Docker container everest-ocpp-csms"
+pushd ocpp-csms || exit 1
+docker build -t everest-ocpp-csms .
+tar xf ../everest-demo/manager/cached_certs_correct_name.tar.gz --strip 3
+docker run -d --name everest-ocpp-csms -v $(pwd)/certs:/certs -p 80:9000 everest-ocpp-csms
+popd || exit 1
+
+
 pushd everest-demo || exit 1
 docker compose --project-name everest-ac-demo --file "${DEMO_COMPOSE_FILE_NAME}" up -d --wait
 
@@ -76,7 +91,7 @@ if [[ "$DEMO_VERSION" =~ sp2 || "$DEMO_VERSION" =~ sp3 ]]; then
   docker exec everest-ac-demo-manager-1 /bin/bash -c "openssl verify -show_chain -CAfile dist/etc/everest/certs/ca/v2g/V2G_ROOT_CA.pem --untrusted dist/etc/everest/certs/ca/csms/CPO_SUB_CA1.pem --untrusted dist/etc/everest/certs/ca/csms/CPO_SUB_CA2.pem dist/etc/everest/certs/client/csms/CSMS_LEAF.pem"
 fi
 
-docker cp manager/device_model_storage.db everest-ac-demo-manager-1:/workspace/dist/share/everest/modules/OCPP201/device_model_storage.db
+docker cp manager/device_model_storage_maeve_sp1.db everest-ac-demo-manager-1:/workspace/dist/share/everest/modules/OCPP201/device_model_storage.db
 docker cp config-sil-ocpp201-pnc.yaml  everest-ac-demo-manager-1:/ext/source/config/config-sil-ocpp201-pnc.yaml
 
 if [[ "$DEMO_VERSION" =~ v2.0.1 ]]; then
