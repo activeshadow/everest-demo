@@ -25,29 +25,8 @@ where:
     -h   Show this message"
 
 
-DEMO_VERSION=
-DEMO_COMPOSE_FILE_NAME=
-
-
-# loop through positional options/arguments
-while getopts ':r:b:j123h' option; do
-  case "$option" in
-    r)  DEMO_REPO="$OPTARG" ;;
-    b)  DEMO_BRANCH="$OPTARG" ;;
-    j)  DEMO_VERSION="v1.6j"
-        DEMO_COMPOSE_FILE_NAME="docker-compose.ocpp16j.yml" ;;
-    1)  DEMO_VERSION="v2.0.1-sp1"
-        DEMO_COMPOSE_FILE_NAME="docker-compose.ocpp201.yml" ;;
-    2)  DEMO_VERSION="v2.0.1-sp2"
-        DEMO_COMPOSE_FILE_NAME="docker-compose.ocpp201.yml" ;;
-    3)  DEMO_VERSION="v2.0.1-sp3"
-        DEMO_COMPOSE_FILE_NAME="docker-compose.ocpp201.yml" ;;
-    h)  echo -e "$usage"; exit ;;
-    \?) echo -e "illegal option: -$OPTARG\n" >&2
-        echo -e "$usage" >&2
-        exit 1 ;;
-  esac
-done
+DEMO_VERSION="v2.0.1-sp1"
+DEMO_COMPOSE_FILE_NAME="docker-compose.ocpp201.yml"
 
 
 if [[ ! "${DEMO_VERSION}" ]]; then
